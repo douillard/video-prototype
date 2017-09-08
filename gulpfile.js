@@ -8,23 +8,19 @@ var reactify = require('reactify');          // transforms jsx to js
 var source = require('vinyl-source-stream'); // use conventional text streams with gulp
 var concat = require('gulp-concat');         // concatenates files
 var eslint = require('gulp-eslint');         // lint js files, including jsx
+var less   = require('gulp-less');         // lint js files, including jsx
 
 var config = {
     port: 9005,
     devBaseUrl: 'http://localhost',
     paths: {
-        html: './src/*.html',
-        js: './src/**/*.js',
+        html  : './src/*.html',
+        js    : './src/js/**/*.js',
         videos: './src/videos/*',
         bundle: './src/bundles/*',
         images: './src/images/*',
-        css: [
-            'node_modules/bootstrap/dist/css/bootstrap.min.css',
-            'node_modules/bootstrap/dist/css/bootstrap-theme.min.css',
-            './src/css/*'
-        ],
-        dist: './dist',
-        mainJs: './src/main.js'
+        less  : './src/less/**/*.less',
+        dist  : './dist'
     }
 }
 
@@ -51,20 +47,23 @@ gulp.task('html', function() {
 });
 
 gulp.task('js', function() {
-    browserify(config.paths.mainJs)
-        .transform(reactify)
-        .bundle()
-        .on('error', console.error.bind(console))
-        .pipe(source('bundle.js'))
+    gulp.src(config.paths.js)
+    //browserify(config.paths.mainJs)
+        //.transform(reactify)
+        //.bundle()
+        //.on('error', console.error.bind(console))
+        //.pipe(source('bundle.js'))
         .pipe(gulp.dest(config.paths.dist + '/scripts'))
         .pipe(connect.reload());
 });
 
-gulp.task('css', function() {
-    gulp.src(config.paths.css)
+gulp.task('less', function() {
+    gulp.src(config.paths.less)
     .pipe(concat('bundle.css'))
-    .pipe(gulp.dest(config.paths.dist + '/css'));
+    .pipe(gulp.dest(config.paths.dist + '/css'))
+    .pipe(connect.reload());
 });
+
 
 gulp.task('videos', function() {
     gulp.src(config.paths.videos)
@@ -98,7 +97,7 @@ gulp.task('lint', function() {
 gulp.task('watch', function() {
     gulp.watch(config.paths.html, ['html']);
     gulp.watch(config.paths.js, ['js', 'lint']);
-    gulp.watch(config.paths.css, ['css']);
+    gulp.watch(config.paths.less, ['less']);
 });
 
-gulp.task('default', ['html', 'js', 'css', 'images','lint', 'open','bundle', 'videos', 'watch']);
+gulp.task('default', ['html', 'js', 'less', 'images','lint', 'open','bundle', 'videos', 'watch']);

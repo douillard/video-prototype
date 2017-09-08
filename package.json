@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "gulp-less": "^3.3.2",
     "react": "^0.13.3",
     "react-router": "^0.13.3",
     "reactify": "^1.1.1"
